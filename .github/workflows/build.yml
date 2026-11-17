@@ -1,0 +1,60 @@
+# Проверка на трёх системах и сборка приложений для Windows и macOS.
+# Готовые приложения лежат в разделе Actions → запуск → Artifacts.
+name: Проверка и сборка
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Тесты (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -s tests -v
+
+  windows-app:
+    name: Приложение для Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Сборка
+        shell: cmd
+        run: windows\build.bat
+      - name: Самопроверка — окно открывается, таблица строится
+        shell: pwsh
+        run: |
+          $app = Start-Process -FilePath "dist\ContractCheck.exe" -ArgumentList "--selftest" -PassThru
+          if (-not $app.WaitForExit(150000)) { $app.Kill(); throw "Приложение не завершило самопроверку" }
+          if (Test-Path selftest.txt) { Get-Content selftest.txt -Encoding UTF8 }
+          if ($app.ExitCode -ne 0) { throw "Самопроверка не пройдена, код $($app.ExitCode)" }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ContractCheck-Windows
+          path: dist/ContractCheck.exe
+
+  macos-app:
+    name: Приложение для macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Сборка и самопроверка
+        run: ./macos/build.sh --check
+      - name: Архив
+        run: ditto -c -k --keepParent "dist/Проверка договоров.app" dist/ContractCheck-macOS.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ContractCheck-macOS
+          path: dist/ContractCheck-macOS.zip

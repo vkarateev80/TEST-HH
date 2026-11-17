@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проверка условий договоров поставки</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>Проверка условий договоров поставки</h1>
+      <p class="sub">Сумма и срок поставки на дату проверки. Каждое значение подтверждено цитатой из загруженного документа.</p>
+    </div>
+    <label class="control">
+      <span>Дата проверки</span>
+      <input type="date" id="checkDate" value="2026-03-10">
+    </label>
+  </header>
+
+  <main class="layout">
+    <div class="main">
+      <section class="card" id="uploadCard">
+        <div class="dropzone" id="dropzone">
+          <div>
+            <strong>Перетащите TXT-файлы сюда</strong>
+            <span class="muted">или выберите их на компьютере — можно несколько сразу</span>
+          </div>
+          <div class="actions">
+            <label class="btn primary">
+              Выбрать файлы
+              <input type="file" id="fileInput" accept=".txt,text/plain" multiple hidden>
+            </label>
+            <button class="btn" type="button" id="samplesBtn" title="Загружает все TXT из папки documents рядом с приложением">Учебные файлы из папки documents</button>
+            <button class="btn ghost" type="button" id="clearBtn" hidden>Очистить</button>
+          </div>
+        </div>
+        <p class="error" id="error" hidden></p>
+        <ul class="docs" id="docs"></ul>
+      </section>
+
+      <section class="card" id="tableCard" hidden>
+        <h2 id="tableTitle">Условия договоров</h2>
+        <div class="table-wrap">
+          <table id="table">
+            <thead><tr id="tableHead"></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" id="pendingCard" hidden>
+        <h2>Не учтено в таблице: сведения для проверки</h2>
+        <p class="muted">Предложения, проекты и ещё не вступившие в силу соглашения. Условия договоров они не меняют.</p>
+        <ul class="list" id="pending"></ul>
+      </section>
+
+      <section class="card" id="reviewCard" hidden>
+        <h2>Документы, которые не удалось связать с договором</h2>
+        <ul class="list" id="review"></ul>
+      </section>
+
+      <section class="card" id="questionsCard" hidden>
+        <h2>Вопросы</h2>
+        <div class="question">
+          <div class="question-controls">
+            <label class="control"><span>Договор</span><select id="qContract"></select></label>
+            <label class="control"><span>Что проверить</span><select id="qField"></select></label>
+          </div>
+          <div class="answer" id="qAnswer"></div>
+        </div>
+        <div class="question">
+          <div class="question-controls">
+            <label class="control"><span>Поставка раньше даты</span><input type="date" id="beforeDate"></label>
+          </div>
+          <div class="answer" id="beforeAnswer"></div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="card viewer" id="viewer">
+      <div class="viewer-head">
+        <h2>Исходный текст</h2>
+        <select id="viewerDoc" hidden></select>
+      </div>
+      <div class="viewer-body" id="viewerBody">
+        <p class="muted">Загрузите документы и нажмите на источник рядом со значением — здесь откроется нужный абзац.</p>
+      </div>
+    </aside>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
