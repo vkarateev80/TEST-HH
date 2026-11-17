@@ -32,7 +32,7 @@ python3 -m unittest discover -s tests -v
 
 Самопроверка сборки открывает окно, загружает учебные файлы и читает таблицу: `./macos/build.sh --check` на macOS, `dist\ContractCheck.exe --selftest` на Windows (итог пишется в `selftest.txt`).
 
-При каждой отправке в репозиторий GitHub Actions прогоняет тесты на Linux, Windows и macOS и собирает оба приложения. Готовые файлы лежат на странице запуска в разделе Artifacts.
+При каждой отправке в репозиторий GitHub Actions прогоняет тесты на Linux, Windows и macOS и собирает оба приложения. Готовые приложения можно скачать со [страницы релизов](https://github.com/vkarateev80/TEST-HH/releases/latest): `ContractCheck-Windows.exe` и `ContractCheck-macOS.zip` (для Mac с процессорами Apple Silicon и Intel).
 
 Приложения не подписаны сертификатом разработчика. Скачанный файл Windows откроет после предупреждения SmartScreen («Подробнее» → «Выполнить в любом случае»), macOS — после подтверждения в настройках безопасности. Приложение, собранное на своём компьютере, запускается без предупреждений.
 

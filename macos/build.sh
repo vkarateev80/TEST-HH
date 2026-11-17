@@ -14,9 +14,15 @@ PROGRAM="$APP/Contents/Resources/app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$PROGRAM"
 
-# 1. Оболочка: окно и запуск программы
-swiftc -O -swift-version 5 -target "$(uname -m)-apple-macos11.0" \
-    -o "$APP/Contents/MacOS/ContractCheck" macos/main.swift
+# 1. Оболочка: окно и запуск программы. Собирается для обоих видов процессоров Mac
+#    (Apple Silicon и Intel) и склеивается в один файл.
+mkdir -p build
+for arch in arm64 x86_64; do
+    swiftc -O -swift-version 5 -target "$arch-apple-macos11.0" \
+        -o "build/ContractCheck-$arch" macos/main.swift
+done
+lipo -create build/ContractCheck-arm64 build/ContractCheck-x86_64 \
+    -output "$APP/Contents/MacOS/ContractCheck"
 cp macos/Info.plist "$APP/Contents/Info.plist"
 
 # 2. Сама программа — те же файлы, что запускаются командой python3 app.py
